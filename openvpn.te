@@ -1,4 +1,4 @@
-policy_module(openvpn, 1.12.2)
+policy_module(openvpn, 1.12.3)
 
 ########################################
 #
@@ -203,6 +203,10 @@ optional_policy(`
 		networkmanager_dbus_chat(openvpn_t)
         networkmanager_stream_connect(openvpn_t)
 	')
+')
+
+optional_policy(`
+	networkmanager_control_socket(openvpn_t, openvpn_var_run_t)
 ')
 
 optional_policy(`

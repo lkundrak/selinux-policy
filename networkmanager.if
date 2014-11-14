@@ -500,3 +500,33 @@ interface(`networkmanager_filetrans_named_content',`
 	files_etc_filetrans($1, NetworkManager_var_lib_t, file, "wired-settings.conf")
 	logging_log_filetrans($1, NetworkManager_var_lib_t, file, "wpa_supplicant.log")
 ')
+
+########################################
+## <summary>
+##	Allow creating sockets in in a NetworkManager runtime data directory,
+##	with an automatic type transition to a specified private type, and
+##	allow a NetworkManager helper to connect and read/write from/to the sockets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <param name="private_type">
+##	<summary>
+##	The type of the object to create.
+##	</summary>
+## </param>
+#
+interface(`networkmanager_control_socket',`
+	gen_require(`
+		type NetworkManager_t;
+		type NetworkManager_var_run_t;
+	')
+
+	filetrans_pattern($1, NetworkManager_var_run_t, $2, sock_file)
+	allow $1 $2:sock_file { create unlink };
+
+	allow NetworkManager_t $1:unix_stream_socket connectto;
+	allow NetworkManager_t $2:sock_file rw_sock_file_perms;
+')
